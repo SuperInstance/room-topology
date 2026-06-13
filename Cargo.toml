@@ -1,7 +1,7 @@
 [package]
 name = "room-topology"
 version = "0.1.0"
-edition = "2024"
+edition = "2021"
 description = "MUD room topology: rooms as topological spaces, doors as continuous maps, warps creating non-trivial fundamental groups"
 license = "MIT"
 repository = "https://github.com/SuperInstance/room-topology"

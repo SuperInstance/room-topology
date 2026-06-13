@@ -107,7 +107,7 @@ impl RoomComplex {
         adj
     }
 
-    /// Count connected components using BFS.
+    /// Count connected components (weak connectivity: direction ignored).
     pub fn connected_components(&self) -> usize {
         let adj = self.adjacency();
         let all_ids: HashSet<&str> = self.rooms.iter().map(|r| r.id.as_str()).collect();
@@ -123,10 +123,29 @@ impl RoomComplex {
             queue.push_back(*start);
             while let Some(node) = queue.pop_front() {
                 if visited.insert(node) {
+                    // Follow outgoing edges
                     if let Some(neighbors) = adj.get(node) {
                         for &nb in neighbors {
                             if !visited.contains(nb) {
                                 queue.push_back(nb);
+                            }
+                        }
+                    }
+                    // Follow incoming edges (reverse direction)
+                    for room in &self.rooms {
+                        for door in &room.exits {
+                            if door.to == node {
+                                let src = room.id.as_str();
+                                if !visited.contains(src) {
+                                    queue.push_back(src);
+                                }
+                            }
+                        }
+                    }
+                    for warp in &self.warps {
+                        if warp.to == node {
+                            if !visited.contains(warp.from.as_str()) {
+                                queue.push_back(warp.from.as_str());
                             }
                         }
                     }
